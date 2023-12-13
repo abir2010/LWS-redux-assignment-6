@@ -1,44 +1,86 @@
-import blogImg from "../../assets/images/mern.webp";
+/* eslint-disable no-unused-vars */
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchBlog,
+  likeIncrement,
+  postBlogLikeCount,
+  postSavedStatus,
+} from "../../features/blog/blogSlice";
+import { useEffect } from "react";
 
 export default function BlogItem() {
-  return (
-    <main className="post">
-      <img
-        src={blogImg}
-        alt="githum"
-        className="w-full rounded-md"
-        id="lws-megaThumb"
-      />
-      <div>
-        <h1 className="mt-6 text-2xl post-title" id="lws-singleTitle">
-          MERN stack for Web Development
-        </h1>
-        <div className="tags" id="lws-singleTags">
-          <span>#python,</span> <span>#tech,</span> <span>#git</span>
-        </div>
-        <div className="btn-group">
-          {/* handle like on button click */}
-          <button className="like-btn" id="lws-singleLinks">
-            <i className="fa-regular fa-thumbs-up" /> 100
-          </button>
-          {/* handle save on button click */}
-          {/* use ".active" class and "Saved" text  if a post is saved, other wise "Save" */}
-          <button className="active save-btn" id="lws-singleSavedBtn">
-            <i className="fa-regular fa-bookmark" /> Saved
-          </button>
-        </div>
-        <div className="mt-6">
-          <p>
-            A MERN stack comprises a collection of four frameworks (MongoDB,
-            ExpressJs, ReactJs and NodeJs) used to develop full-stack javascript
-            solutions for rapid, scalable, and secure applications. Each
-            framework serves a different purpose in creating successful web
-            applications. It is an excellent choice for companies looking to
-            develop high-quality responsive applications quickly using just one
-            language.
-          </p>
-        </div>
-      </div>
-    </main>
+  const bid = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchBlog(bid.blogId));
+  }, [dispatch, bid.blogId]);
+
+  const { blog, isLoading, isError, error } = useSelector(
+    (state) => state.blog
   );
+  let { id, description, title, image, tags, likes, isSaved } = blog;
+
+  const handleLikeBtn = () => {
+    likes++;
+    dispatch(postBlogLikeCount({ likes, id }));
+  };
+  const handleSavedBtn = () => {
+    isSaved = !isSaved;
+    dispatch(postSavedStatus({ isSaved, id }));
+  };
+
+  let style = isSaved ? "active save-btn" : "save-btn";
+
+  let content = "";
+  if (isLoading) content = "Loading...";
+  if (!isLoading && isError) content = error;
+  if (!isLoading && !isError && !id) content = "No blogs found :(";
+  if (!isLoading && !isError && id !== 0)
+    content = (
+      <main className="post">
+        <img
+          src={image}
+          alt=""
+          className="w-full rounded-md"
+          id="lws-megaThumb"
+        />
+        <div>
+          <h1 className="mt-6 text-2xl post-title" id="lws-singleTitle">
+            {title}
+          </h1>
+          <div className="tags" id="lws-singleTags">
+            {tags?.map((tag) => (
+              <span key={tag.index}>#{tag} </span>
+            ))}
+          </div>
+          <div className="btn-group">
+            {/* handle like on button click */}
+            <button
+              onClick={handleLikeBtn}
+              className="like-btn"
+              id="lws-singleLinks"
+            >
+              <i className="fa-regular fa-thumbs-up" /> {likes}
+            </button>
+            {/* handle save on button click */}
+            {/* use ".active" class and "Saved" text  if a post is saved, other wise "Save" */}
+            <button
+              onClick={handleSavedBtn}
+              className={style}
+              id="lws-singleSavedBtn"
+            >
+              <i className="fa-regular fa-bookmark" />{" "}
+              {isSaved ? "Saved" : "Save"}
+            </button>
+          </div>
+          <div className="mt-6">
+            <p>{description}</p>
+          </div>
+        </div>
+      </main>
+    );
+
+  return content;
 }

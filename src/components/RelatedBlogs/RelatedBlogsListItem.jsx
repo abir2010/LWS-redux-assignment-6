@@ -1,19 +1,26 @@
-import blogImg from "../../assets/images/git.webp";
+import { Link } from "react-router-dom";
 
-export default function RelatedBlogsListItem() {
+/* eslint-disable react/prop-types */
+export default function RelatedBlogsListItem({ blog }) {
+  const { title, id, tags, createdAt, image } = blog;
   return (
     <div className="card">
-      <a href="post.html">
-        <img src={blogImg} className="card-image" alt="" />
-      </a>
+      <Link to={`/blogs/${id}`}>
+        <img src={image} className="card-image" alt="" />
+      </Link>
       <div className="p-4">
-        <a href="post.html" className="text-lg post-title lws-RelatedPostTitle">
-          Top Github Alternatives
-        </a>
+        <Link
+          to={`/blogs/${id}`}
+          className="text-lg post-title lws-RelatedPostTitle"
+        >
+          {title}
+        </Link>
         <div className="mb-0 tags">
-          <span>#python,</span> <span>#tech,</span> <span>#git</span>
+          {tags?.map((tag) => (
+            <span key={tag.index}>#{tag} </span>
+          ))}
         </div>
-        <p>2010-03-27</p>
+        <p>{createdAt}</p>
       </div>
     </div>
   );
