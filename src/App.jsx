@@ -1,15 +1,18 @@
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
-// import BlogPage from "./pages/BlogPage";
+import BlogPage from "./pages/BlogPage";
 
 function App() {
   return (
-    <div>
+    <Router>
       <Navbar />
-      <Home />
-      {/* <BlogPage /> */}
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/blogs/:blogId" element={<BlogPage />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -1,30 +1,36 @@
-import blogImg from "../../assets/images/git.webp";
+import { Link } from "react-router-dom";
 
-export default function BlogsListItem() {
+/* eslint-disable react/prop-types */
+export default function BlogsListItem({ blog }) {
+  const { id, title, image, tags, likes, isSaved, createdAt } = blog;
+
   return (
     <div className="lws-card">
-      <a href="post.html">
-        <img src={blogImg} className="lws-card-image" alt />
-      </a>
+      <Link to={`/blogs/${id}`}>
+        <img src={image} className="lws-card-image" alt="" />
+      </Link>
       <div className="p-4">
         <div className="lws-card-header">
-          <p className="lws-publishedDate">2023-05-01</p>
+          <p className="lws-publishedDate">{createdAt}</p>
           <p className="lws-likeCount">
             <i className="fa-regular fa-thumbs-up" />
-            100
+            {likes}
           </p>
         </div>
-        <a href="post.html" className="lws-postTitle">
-          {" "}
-          Top Github Alternatives{" "}
-        </a>
+        <Link to={`/blogs/${id}`} className="lws-postTitle">
+          {title}
+        </Link>
         <div className="lws-tags">
-          <span>#python,</span> <span>#tech,</span> <span>#git</span>
+          {tags?.map((tag) => (
+            <span key={tag.index}>#{tag}</span>
+          ))}
         </div>
         {/* Show this element if post is saved */}
-        <div className="flex gap-2 mt-4">
-          <span className="lws-badge"> Saved </span>
-        </div>
+        {isSaved && (
+          <div className="flex gap-2 mt-4">
+            <span className="lws-badge"> Saved </span>
+          </div>
+        )}
         {/* Show this element if post is saved Ends */}
       </div>
     </div>

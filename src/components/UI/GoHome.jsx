@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
+
 export default function GoHome() {
   return (
     <div className="container mt-8">
-      <a
-        href="index.html"
+      <Link
+        to={`/`}
         className="inline-block text-gray-600 home-btn"
         id="lws-goHome"
       >
         <i className="mr-2 fa-solid fa-house" />
         Go Home
-      </a>
+      </Link>
     </div>
   );
 }
